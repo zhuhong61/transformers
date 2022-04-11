@@ -1,6 +1,9 @@
 name: Self-hosted runner (scheduled)
 
 on:
+  push:
+    branches:
+      - post-action-build-test-tokenizers-*
   repository_dispatch:
   schedule:
     - cron: "0 2 * * *"
@@ -23,8 +26,11 @@ jobs:
         machines: [multi-gpu-docker, single-gpu-docker]
     runs-on: ${{ matrix.machines }}
     container:
-      image: huggingface/transformers-all-latest-gpu
+      image: huggingface/internal-transformers-all-latest-gpu-tokenizers-main
       options: --gpus 0 --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -65,8 +71,11 @@ jobs:
         machines: [multi-gpu-docker, single-gpu-docker]
     runs-on: ${{ matrix.machines }}
     container:
-      image: huggingface/transformers-all-latest-gpu
+      image: huggingface/internal-transformers-all-latest-gpu-tokenizers-main
       options: --gpus 0 --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     needs: setup
     steps:
       - name: Echo folder ${{ matrix.folders }}
@@ -96,8 +105,11 @@ jobs:
     name: Examples directory
     runs-on: [self-hosted, single-gpu-docker]
     container:
-      image: huggingface/transformers-all-latest-gpu
+      image: huggingface/internal-transformers-all-latest-gpu-tokenizers-main
       options: --gpus 0 --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     needs: setup
     steps:
       - name: Update clone
@@ -130,8 +142,11 @@ jobs:
         machines: [multi-gpu-docker, single-gpu-docker]
     runs-on: ${{ matrix.machines }}
     container:
-      image: huggingface/transformers-pytorch-gpu
+      image: huggingface/internal-transformers-pytorch-gpu-tokenizers-main
       options: --gpus 0 --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     needs: setup
     steps:
       - name: Update clone
@@ -165,8 +180,11 @@ jobs:
         machines: [multi-gpu-docker, single-gpu-docker]
     runs-on: ${{ matrix.machines }}
     container:
-      image: huggingface/transformers-tensorflow-gpu
+      image: huggingface/internal-transformers-tensorflow-gpu-tokenizers-main
       options: --gpus 0 --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     needs: setup
     steps:
       - name: Update clone
@@ -202,8 +220,11 @@ jobs:
     runs-on: ${{ matrix.machines }}
     needs: setup
     container:
-      image: huggingface/transformers-pytorch-deepspeed-latest-gpu
+      image: huggingface/internal-transformers-pytorch-deepspeed-latest-gpu-tokenizers-main
       options: --gpus all --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
       - name: Update clone
         working-directory: /workspace/transformers
@@ -247,7 +268,7 @@ jobs:
         env:
           CI_SLACK_BOT_TOKEN: ${{ secrets.CI_SLACK_BOT_TOKEN }}
           CI_SLACK_CHANNEL_ID: ${{ secrets.CI_SLACK_CHANNEL_ID }}
-          CI_SLACK_CHANNEL_ID_DAILY: ${{ secrets.CI_SLACK_CHANNEL_ID_DAILY }}
+          CI_SLACK_CHANNEL_ID_DAILY: ${{ secrets.CI_SLACK_CHANNEL_DUMMY_TESTS }}
           CI_SLACK_CHANNEL_DUMMY_TESTS: ${{ secrets.CI_SLACK_CHANNEL_DUMMY_TESTS }}
         run: |
           pip install slack_sdk

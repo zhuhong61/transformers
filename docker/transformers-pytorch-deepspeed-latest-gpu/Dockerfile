@@ -4,7 +4,7 @@ LABEL maintainer="Hugging Face"
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt -y update
-RUN apt install -y libaio-dev
+RUN apt install -y libaio-dev curl libssl-dev
 RUN python3 -m pip install --no-cache-dir --upgrade pip
 
 ARG REF=main
@@ -19,3 +19,12 @@ RUN git clone https://github.com/microsoft/DeepSpeed && cd DeepSpeed && rm -rf b
 RUN cd transformers && python3 setup.py develop
 
 RUN python3 -c "from deepspeed.launcher.runner import main"
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN cargo --help
+RUN python3 -m pip uninstall -y tokenizers
+RUN git clone https://github.com/huggingface/tokenizers
+RUN python3 -m pip install --no-cache-dir setuptools-rust
+RUN python3 -m pip install --no-cache-dir ./tokenizers/bindings/python

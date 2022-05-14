@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - test_improve_ci_report_commit_titile
+      - test_improve_ci_report_commit_titile_none
   repository_dispatch:
 
 env:

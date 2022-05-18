@@ -3,11 +3,7 @@ name: Self-hosted runner; Nightly (scheduled)
 on:
   push:
     branches:
-      - nightly_ci*
-  repository_dispatch:
-  schedule:
-    - cron: "0 0 */3 * *"
-
+      - test_docker-image_update_docker_file
 env:
     HF_HOME: /mnt/cache
     TRANSFORMERS_IS_CI: yes

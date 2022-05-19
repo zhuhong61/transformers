@@ -158,7 +158,7 @@ jobs:
     runs-on: ${{ format('{0}-{1}', matrix.machine_type, 'docker') }}
     needs: setup
     container:
-      image: huggingface/transformers-pytorch-nightly-gpu
+      image: huggingface/transformers-pytorch-deepspeed-nightly-gpu
       options: --gpus all --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
     steps:
       - name: Update clone

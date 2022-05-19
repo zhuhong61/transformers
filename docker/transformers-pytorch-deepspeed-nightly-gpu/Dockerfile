@@ -12,7 +12,7 @@ RUN git clone https://github.com/huggingface/transformers && cd transformers && 
 RUN python3 -m pip install --no-cache-dir -e ./transformers[deepspeed-testing]
 
 # Install nightly build PyTorch
-RUN pip uninstall torch torchvision torchaudio
+RUN python3 -m pip uninstall -y torch torchvision torchaudio
 RUN python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu102
 
 RUN git clone https://github.com/microsoft/DeepSpeed && cd DeepSpeed && rm -rf build && \

@@ -89,6 +89,10 @@ jobs:
         working-directory: /transformers
         run: git fetch && git checkout ${{ github.sha }}
 
+      - name: Echo versions
+        working-directory: /transformers
+        run: echo $(python3 -c 'import torch; version = "Pytorch Version:" + " " + torch.__version__; print(version)')
+
       - name: Run all tests on GPU
         working-directory: /transformers
         run: python3 -m pytest -v --make-reports=${{ matrix.machine_type }}_tests_gpu_${{ matrix.folders }} tests/${{ matrix.folders }}
@@ -133,6 +137,10 @@ jobs:
         working-directory: /transformers
         run: git fetch && git checkout ${{ github.sha }}
 
+      - name: Echo versions
+        working-directory: /transformers
+        run: echo $(python3 -c 'import torch; version = "Pytorch Version:" + " " + torch.__version__; print(version)')
+
       - name: Run all tests on GPU
         working-directory: /transformers
         run: python3 -m pytest -v --make-reports=${{ matrix.machine_type }}_tests_gpu_${{ matrix.folders }} tests/${{ matrix.folders }}
@@ -172,6 +180,10 @@ jobs:
 #          rm -rf DeepSpeed
 #          git clone https://github.com/microsoft/DeepSpeed && cd DeepSpeed && rm -rf build
 #          DS_BUILD_CPU_ADAM=1 DS_BUILD_AIO=1 DS_BUILD_UTILS=1 python3 -m pip install -e . --global-option="build_ext" --global-option="-j8" --no-cache -v --disable-pip-version-check
+
+      - name: Echo versions
+        working-directory: /transformers
+        run: echo $(python3 -c 'import torch; version = "Pytorch Version:" + " " + torch.__version__; print(version)')
 
       - name: Run all tests on GPU
         working-directory: /workspace/transformers

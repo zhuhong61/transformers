@@ -187,7 +187,6 @@ jobs:
           echo $(python3 -c 'import torch; version = "Pytorch Version:" + " " + torch.__version__; print(version)')
           echo $(python3 -c 'import deepspeed; version = "DeepSpeed Version:" + " " + deepspeed.__version__; print(version)')
 
-
       - name: Run all tests on GPU
         working-directory: /workspace/transformers
         run: |

@@ -11,12 +11,10 @@ ARG REF=main
 RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
 RUN python3 -m pip install --no-cache-dir -e ./transformers[deepspeed-testing]
 
-# Install nightly build PyTorch
+# Install nightly build PyTorch (with cuda 11.x)
 RUN python3 -m pip uninstall -y torch torchvision torchaudio
-RUN python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu102
+RUN python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu113
 
-# Currently not working with nightly-built PyTorch.
-# (In fact, this step doesn't work if we do `python3 -m pip install --no-cache-dir -U torch torchvision torchaudio`)
 RUN git clone https://github.com/microsoft/DeepSpeed && cd DeepSpeed && rm -rf build && \
     DS_BUILD_CPU_ADAM=1 DS_BUILD_AIO=1 DS_BUILD_UTILS=1 python3 -m pip install -e . --global-option="build_ext" --global-option="-j8" --no-cache -v --disable-pip-version-check 2>&1
 

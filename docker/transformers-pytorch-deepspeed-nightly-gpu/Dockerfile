@@ -17,8 +17,8 @@ RUN python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio 
 
 # Currently not working with nightly-built PyTorch.
 # (In fact, this step doesn't work if we do `python3 -m pip install --no-cache-dir -U torch torchvision torchaudio`)
-# RUN git clone https://github.com/microsoft/DeepSpeed && cd DeepSpeed && rm -rf build && \
-#     DS_BUILD_CPU_ADAM=1 DS_BUILD_AIO=1 DS_BUILD_UTILS=1 python3 -m pip install -e . --global-option="build_ext" --global-option="-j8" --no-cache -v --disable-pip-version-check 2>&1
+RUN git clone https://github.com/microsoft/DeepSpeed && cd DeepSpeed && rm -rf build && \
+    DS_BUILD_CPU_ADAM=1 DS_BUILD_AIO=1 DS_BUILD_UTILS=1 python3 -m pip install -e . --global-option="build_ext" --global-option="-j8" --no-cache -v --disable-pip-version-check 2>&1
 
 # When installing in editable mode, `transformers` is not recognized as a package.
 # this line must be added in order for python to be aware of transformers.

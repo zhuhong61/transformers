@@ -25,4 +25,5 @@ jobs:
         run: |
           git fetch origin
           git checkout push-ci
-          git merge re-use-push-ci-workflow
+          git pull origin re-use-push-ci-workflow --allow-unrelated-histories
+          git push

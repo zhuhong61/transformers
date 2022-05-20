@@ -1,0 +1,17 @@
+name: Self-hosted runner (push-caller)
+
+on:
+  push:
+    branches:
+      - re-use-push-ci-workflow
+    paths:
+      - "src/**"
+      - "tests/**"
+      - ".github/**"
+      - "templates/**"
+      - "utils/**"
+
+jobs:
+  call_push_ci:
+    name: Call Push CI
+    uses: ./.github/workflows/self-push.yml

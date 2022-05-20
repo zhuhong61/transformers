@@ -23,5 +23,6 @@ jobs:
 
       - name: Checkout to branch push-ci
         run: |
+          git fetch origin
           git checkout push-ci
           git merge re-use-push-ci-workflow

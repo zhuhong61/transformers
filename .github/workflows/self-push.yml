@@ -3,6 +3,7 @@ name: Self-hosted runner (push)
 on:
   push:
     branches:
+      - push-ci
       - ci_*
       - ci-*
     paths:
@@ -130,30 +131,3 @@ jobs:
         with:
           name: ${{ matrix.machine_type }}_run_all_tests_gpu_${{ env.matrix_folders }}_test_reports
           path: /transformers/reports/${{ matrix.machine_type }}_tests_gpu_${{ matrix.folders }}
-
-  send_results:
-    name: Send results to webhook
-    runs-on: ubuntu-latest
-    if: always()
-    needs: [
-        setup,
-        run_tests_single_gpu
-    ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-      - name: Send message to Slack
-        env:
-          CI_SLACK_BOT_TOKEN: ${{ secrets.CI_SLACK_BOT_TOKEN }}
-          CI_SLACK_CHANNEL_ID: ${{ secrets.CI_SLACK_CHANNEL_ID }}
-          CI_SLACK_CHANNEL_ID_DAILY: ${{ secrets.CI_SLACK_CHANNEL_ID_DAILY }}
-          CI_SLACK_CHANNEL_DUMMY_TESTS: ${{ secrets.CI_SLACK_CHANNEL_DUMMY_TESTS }}
-          CI_SLACK_REPORT_CHANNEL_ID: ${{ secrets.CI_SLACK_CHANNEL_DUMMY_TESTS }}
-          CI_EVENT: push
-          CI_TITLE: ${{ github.event.head_commit.message }}
-          CI_COMMIT_URL: ${{ github.event.head_commit.url }}
-        # We pass `needs.setup.outputs.matrix` as the argument. A processing in `notification_service.py` to change
-        # `models/bert` to `models_bert` is required, as the artifact names use `_` instead of `/`.
-        run: |
-          pip install slack_sdk
-          python utils/notification_service.py "${{ needs.setup.outputs.matrix }}"

@@ -12,6 +12,16 @@ on:
       - "utils/**"
 
 jobs:
-  call_push_ci:
-    name: Call Push CI
-    uses: ./.github/workflows/self-push.yml
+  run_push_ci:
+    name: Run Push CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout transformers
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Checkout to branch push-ci
+        run: |
+          git checkout push-ci
+          git merge re-use-push-ci-workflow

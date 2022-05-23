@@ -3,7 +3,7 @@ name: Self-hosted runner (push-caller)
 on:
   push:
     branches:
-      - main
+      - re-use-push-ci-workflow
     paths:
       - "src/**"
       - "tests/**"

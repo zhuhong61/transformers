@@ -17,6 +17,10 @@ ARG PYTORCH=''
 RUN [ ${#PYTORCH} -gt 0 -a ${#PYTORCH} != "pre" ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'
 RUN [ ${#PYTORCH} != "pre" ] && python3 -m pip install --no-cache-dir -U $VERSION || python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu102
 
+# Install extra modules for nightly PyTorch CI
+RUN [ ${#PYTORCH} == "pre" ] && python3 -m pip install git+https://github.com/pytorch/functorch#egg=functorch[aot]
+RUN [ ${#PYTORCH} == "pre" ] && python3 -m pip install git+https://github.com/pytorch/torchdynamo
+
 RUN python3 -m pip uninstall -y tensorflow flax
 
 RUN python3 -m pip install --no-cache-dir torch-scatter -f https://data.pyg.org/whl/torch-$(python3 -c "from torch import version; print(version.__version__.split('+')[0])")+cu102.html

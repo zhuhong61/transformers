@@ -18,7 +18,7 @@ ARG PYTORCH=''
 RUN [ ${#PYTORCH} -gt 0 -a ${#PYTORCH} != "pre" ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'
 RUN [ ${#PYTORCH} != "pre" ] && python3 -m pip install --no-cache-dir -U $VERSION || python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu102
 
-# Install extra modules for nightly PyTorch CI
+# Install torchdynamo dependencies
 # `pre` means `nightly built PyTorch`
 RUN [ ${#PYTORCH} == "pre" ] && python3 -m pip install git+https://github.com/pytorch/functorch#egg=functorch[aot]
 RUN [ ${#PYTORCH} == "pre" ] && python3 -m pip install git+https://github.com/pytorch/torchdynamo

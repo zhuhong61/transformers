@@ -15,10 +15,6 @@ RUN python3 -m pip install --no-cache-dir -e ./transformers[deepspeed-testing]
 RUN python3 -m pip uninstall -y torch torchvision torchaudio
 RUN python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu113
 
-# Install extra modules for nightly PyTorch CI
-RUN python3 -m pip install git+https://github.com/pytorch/functorch#egg=functorch[aot]
-RUN python3 -m pip install git+https://github.com/pytorch/torchdynamo
-
 RUN git clone https://github.com/microsoft/DeepSpeed && cd DeepSpeed && rm -rf build && \
     DS_BUILD_CPU_ADAM=1 DS_BUILD_AIO=1 DS_BUILD_UTILS=1 python3 -m pip install -e . --global-option="build_ext" --global-option="-j8" --no-cache -v --disable-pip-version-check 2>&1
 

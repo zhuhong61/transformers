@@ -12,12 +12,14 @@ RUN git clone https://github.com/huggingface/transformers && cd transformers && 
 RUN python3 -m pip install --no-cache-dir -e ./transformers[dev-torch,testing]
 
 # If set to nothing, will install the latest version
+# `pre` means `nightly built PyTorch`
 ARG PYTORCH=''
 
 RUN [ ${#PYTORCH} -gt 0 -a ${#PYTORCH} != "pre" ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'
 RUN [ ${#PYTORCH} != "pre" ] && python3 -m pip install --no-cache-dir -U $VERSION || python3 -m pip install --no-cache-dir -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu102
 
 # Install extra modules for nightly PyTorch CI
+# `pre` means `nightly built PyTorch`
 RUN [ ${#PYTORCH} == "pre" ] && python3 -m pip install git+https://github.com/pytorch/functorch#egg=functorch[aot]
 RUN [ ${#PYTORCH} == "pre" ] && python3 -m pip install git+https://github.com/pytorch/torchdynamo
 

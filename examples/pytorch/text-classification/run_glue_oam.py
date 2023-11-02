@@ -54,7 +54,7 @@ from deepspeed.accelerator import get_accelerator
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-check_min_version("4.35.0")
+check_min_version("4.35.0.dev0")
 
 logger = get_logger(__name__)
 
@@ -437,7 +437,7 @@ def main():
         #     trust_remote_code=args.trust_remote_code,
         #     # low_cpu_mem_usage=True
         # )
-        model = AutoModelForSequenceClassification.from_config(config=config)
+        model = AutoModelForSequenceClassification.from_config(config=config, torch_dtype=torch.bfloat16)
 
         model.gradient_checkpointing_enable() # mll1
         model.config.use_cache = False
@@ -553,18 +553,18 @@ def main():
         overrode_max_train_steps = True
 
     # Lora
-    from peft import LoraConfig, get_peft_model
-    lora_config = LoraConfig(
-        r=16,
-        lora_alpha=16,
-        target_modules=["query_key_value"],
-        lora_dropout=0.1,
-        bias="none",
-    )
-    lora_model = get_peft_model(model, lora_config)
-    model = lora_model
-    # print_trainable_parameters(model)
-    print(model)
+    # from peft import LoraConfig, get_peft_model
+    # lora_config = LoraConfig(
+    #     r=16,
+    #     lora_alpha=16,
+    #     target_modules=["query_key_value"],
+    #     lora_dropout=0.1,
+    #     bias="none",
+    # )
+    # lora_model = get_peft_model(model, lora_config)
+    # model = lora_model
+    # # print_trainable_parameters(model)
+    # print(model)
 
     record_current_mem_info("wrap w/ lora")
     # Deepspeed
@@ -627,11 +627,11 @@ def main():
                 #     active=3)
                 ) as prof:
                 with torch.profiler.record_function("Falcon_training"):
+                    # with torch.autocast("xpu"):
                     outputs = ds_engine.module(**batch)
                     record_current_mem_info("after fwd  " + str(step))
                     loss = outputs.loss
                     loss = loss / args.gradient_accumulation_steps
-                    # accelerator.backward(loss)
                     ds_engine.backward(loss)
                     record_current_mem_info("after bwd  " + str(step))
                     if step % args.gradient_accumulation_steps == 0 or step == len(train_dataloader) - 1:
